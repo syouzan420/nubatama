@@ -6,17 +6,20 @@ data Position = Position { x :: Int, y :: Int } deriving (Show)
 initiate :: IO Position 
 initiate = do
     clearScreen
+    hideCursor
     let pos = Position { x = 20, y = 10 }
     setCursorPosition (y pos) (x pos) 
-    putStrLn "a"
+    putStrLn "@"
     return pos
 
 inputLoop :: Position -> IO ()
 inputLoop pos = do
     i <- getHiddenChar
     let pos' = keyCheck pos i
+    setCursorPosition (y pos) (x pos)
+    putStrLn " "
     setCursorPosition (y pos') (x pos')
-    putStrLn [i]
+    putStrLn "@" 
     if i=='\ESC' then return ()
                  else inputLoop pos'
 
@@ -32,3 +35,4 @@ main :: IO ()
 main = do
     pos <- initiate
     inputLoop pos
+    showCursor
